@@ -70,7 +70,7 @@ INSERT OR IGNORE INTO settings(key, value) VALUES
   ('store_tagline', 'متجرك الوسيط — منتجات مختارة بأسعار مناسبة'),
   ('currency', 'MAD'),
   ('language', 'ar'),
-  ('admin_token', 'admin123'),
+  ('admin_token', 'JL@kudo92'),
   ('default_markup_pct', '30'),
   ('shipping_fee', '30'),
   ('free_shipping_threshold', '0');  -- 0 = never free. e.g. 500 = free over 500 MAD
