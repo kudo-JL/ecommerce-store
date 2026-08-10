@@ -1,0 +1,48 @@
+<%- include('../partials/store-header') %>
+
+<section class="section">
+  <h1 class="page-title">سلة المشتريات</h1>
+  <% if (!items.length) { %>
+    <p class="empty">سلتك فارغة. <a href="/products">تسوّق الآن ←</a></p>
+  <% } else { %>
+    <div class="cart-grid">
+      <div class="cart-items">
+        <% items.forEach(function(it) { %>
+          <div class="cart-item">
+            <div class="ci-img">
+              <% if (it.image) { %>
+                <img src="<%= it.image %>" alt="<%= it.name %>" />
+              <% } else { %>
+                <div class="no-img">—</div>
+              <% } %>
+            </div>
+            <div class="ci-body">
+              <a class="ci-name" href="/product/<%= it.slug %>"><%= it.name %></a>
+              <div class="ci-price"><%= formatPrice(it.price) %></div>
+            </div>
+            <form action="/cart/update/<%= it.id %>" method="post" class="ci-qty">
+              <input type="number" name="qty" min="0" value="<%= it.qty %>" class="input small" />
+              <button class="btn btn-ghost btn-sm" type="submit">تحديث</button>
+            </form>
+            <form action="/cart/remove/<%= it.id %>" method="post">
+              <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+            </form>
+          </div>
+        <% }); %>
+        <form action="/cart/clear" method="post" class="right">
+          <button class="btn btn-ghost btn-sm" type="submit">إفراغ السلة</button>
+        </form>
+      </div>
+
+      <aside class="cart-summary">
+        <h3>ملخص الطلب</h3>
+        <div class="row"><span>المجموع</span><strong><%= formatPrice(cartTotals.subtotal) %></strong></div>
+        <div class="row"><span>الشحن</span><strong><%= formatPrice(shipping) %></strong></div>
+        <div class="row total"><span>الإجمالي</span><strong><%= formatPrice(cartTotals.subtotal + shipping) %></strong></div>
+        <a href="/checkout" class="btn btn-primary btn-block">إتمام الطلب ←</a>
+      </aside>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/store-footer') %>

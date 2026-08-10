@@ -1,0 +1,72 @@
+<%- include('../partials/admin-header') %>
+
+<% if (!orders.length) { %>
+  <p class="empty">لا توجد طلبات بعد.</p>
+<% } else { %>
+  <% orders.forEach(function(o) { %>
+    <details class="order-card" <%= o.status === 'new' ? 'open' : '' %>>
+      <summary>
+        <div>
+          <strong>#<%= o.id %></strong>
+          <span class="muted small">— <%= o.created_at %></span>
+        </div>
+        <div>
+          <strong><%= o.customer_name %></strong>
+          <span class="muted small">— <%= o.customer_phone || 'بدون هاتف' %></span>
+        </div>
+        <div>
+          <strong><%= formatPrice(o.total) %></strong>
+          <div class="muted small">ربح: <span class="ok"><%= formatPrice(o.orderProfit) %></span></div>
+        </div>
+        <div>
+          <form action="/admin/orders/<%= o.id %>/status" method="post" class="inline">
+            <select name="status" onchange="this.form.submit()" class="input small">
+              <% ['new','confirmed','shipped','delivered','cancelled'].forEach(function(s) { %>
+                <option value="<%= s %>" <%= o.status === s ? 'selected' : '' %>><%= s %></option>
+              <% }); %>
+            </select>
+          </form>
+          <form action="/admin/orders/<%= o.id %>/delete" method="post" class="inline" onsubmit="return confirm('حذف الطلب؟')">
+            <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+          </form>
+        </div>
+      </summary>
+      <div class="order-body">
+        <div class="order-meta">
+          <div><strong>المدينة:</strong> <%= o.customer_city || '—' %></div>
+          <div><strong>العنوان:</strong> <%= o.customer_address || '—' %></div>
+          <% if (o.notes) { %><div><strong>ملاحظات:</strong> <%= o.notes %></div><% } %>
+        </div>
+
+        <div class="money-grid">
+          <div><span>مجموع المنتجات</span><strong><%= formatPrice(o.subtotal) %></strong></div>
+          <div>
+            <span>الشحن (عدّل إن لزم)</span>
+            <form action="/admin/orders/<%= o.id %>/shipping" method="post" class="inline">
+              <input name="shipping" type="number" min="0" step="0.01" value="<%= o.shipping %>" class="input small" />
+              <button class="btn btn-ghost btn-sm" type="submit">حفظ</button>
+            </form>
+          </div>
+          <div><span>الإجمالي (المفوتر للزبون)</span><strong><%= formatPrice(o.total) %></strong></div>
+          <div class="profit"><span>🟢 ربحك من هذا الطلب (بدون شحن)</span><strong><%= formatPrice(o.orderProfit) %></strong></div>
+        </div>
+
+        <table class="table small">
+          <thead><tr><th>المنتوج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr></thead>
+          <tbody>
+            <% o.items.forEach(function(it) { %>
+              <tr>
+                <td><%= it.name %></td>
+                <td><%= it.quantity %></td>
+                <td><%= formatPrice(it.price) %></td>
+                <td><%= formatPrice(it.line_total) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  <% }); %>
+<% } %>
+
+<%- include('../partials/admin-footer') %>

@@ -1,0 +1,94 @@
+<%- include('../partials/admin-header') %>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">إجمالي المنتجات</div>
+    <div class="stat-value"><%= stats.products %></div>
+    <div class="stat-sub"><%= stats.published %> منشور • <%= stats.imported %> مستورد</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">إجمالي الطلبات</div>
+    <div class="stat-value"><%= stats.orders %></div>
+    <div class="stat-sub"><%= stats.new_orders %> جديدة</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">مبيعات المنتجات (بدون شحن)</div>
+    <div class="stat-value"><%= formatPrice(stats.products_revenue) %></div>
+    <div class="stat-sub">الشحن المُحصّل: <%= formatPrice(stats.shipping_collected) %></div>
+  </div>
+  <div class="stat-card highlight">
+    <div class="stat-label">🟢 صافي ربحك المحقق</div>
+    <div class="stat-value"><%= formatPrice(stats.realized_profit) %></div>
+    <div class="stat-sub">ربح متوقع من المخزون: <%= formatPrice(stats.potential_profit) %></div>
+  </div>
+</div>
+
+<div class="alert info" style="margin-bottom:20px">
+  <strong>💡 كيف نحسب الربح؟</strong>
+  صافي الربح = (سعر البيع − السعر الأصلي للمنتوج) × الكمية المباعة.
+  <strong>رسوم الشحن لا تُحتسب ضمن الربح</strong> — هي فقط لتغطية تكلفة التوصيل.
+</div>
+
+<div class="two-col">
+  <section>
+    <h2>أحدث المنتجات</h2>
+    <% if (!recentProducts.length) { %>
+      <p class="empty">لا توجد منتجات بعد.</p>
+    <% } else { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>السعر</th>
+            <th>المخزون</th>
+            <th>النوع</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentProducts.forEach(function(p) { %>
+            <tr>
+              <td><a href="/admin/products/<%= p.id %>/edit"><%= p.name %></a></td>
+              <td><%= formatPrice(p.selling_price) %></td>
+              <td><%= p.stock %></td>
+              <td><%= p.is_imported ? 'مستورد' : 'يدوي' %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+
+  <section>
+    <h2>أحدث الطلبات</h2>
+    <% if (!recentOrders.length) { %>
+      <p class="empty">لا توجد طلبات بعد.</p>
+    <% } else { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>رقم</th>
+            <th>الزبون</th>
+            <th>المنتوجات</th>
+            <th>الشحن</th>
+            <th>الإجمالي</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentOrders.forEach(function(o) { %>
+            <tr>
+              <td>#<%= o.id %></td>
+              <td><%= o.customer_name %></td>
+              <td><%= formatPrice(o.subtotal) %></td>
+              <td class="muted"><%= formatPrice(o.shipping) %></td>
+              <td><strong><%= formatPrice(o.total) %></strong></td>
+              <td><span class="status status-<%= o.status %>"><%= o.status %></span></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../partials/admin-footer') %>

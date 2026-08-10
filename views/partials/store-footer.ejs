@@ -1,0 +1,35 @@
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4><%= storeName %></h4>
+          <p class="muted"><%= storeTagline %></p>
+        </div>
+        <div>
+          <h4>روابط</h4>
+          <a href="/">الرئيسية</a>
+          <a href="/products">المنتجات</a>
+          <a href="/cart">السلة</a>
+          <a href="/admin/login">دخول المدير</a>
+        </div>
+        <div>
+          <h4>تواصل</h4>
+          <p class="muted">خدمة الزبائن عبر الهاتف وواتساب</p>
+        </div>
+      </div>
+      <p class="copyright">© <%= new Date().getFullYear() %> <%= storeName %> — جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+  <script src="/js/store.js"></script>
+  <script>
+    // Register PWA service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

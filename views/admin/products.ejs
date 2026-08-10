@@ -1,0 +1,77 @@
+<%- include('../partials/admin-header') %>
+
+<div class="actions-bar">
+  <a href="/admin/products/new" class="btn btn-primary">➕ إضافة يدوية</a>
+  <a href="/admin/import" class="btn btn-secondary">🔗 استيراد من رابط</a>
+</div>
+
+<% if (!products.length) { %>
+  <p class="empty">لا توجد منتجات. ابدأ بإضافة منتوج يدوياً أو استورده من رابط.</p>
+<% } else { %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>صورة</th>
+        <th>الاسم</th>
+        <th>الفئة</th>
+        <th>سعر البيع</th>
+        <th>الأصلي</th>
+        <th>الربح</th>
+        <th>المخزون</th>
+        <th>المصدر</th>
+        <th>الحالة</th>
+        <th>إجراءات</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(function(p) { %>
+        <tr>
+          <td>
+            <% if (p.image_url) { %>
+              <img src="<%= p.image_url %>" alt="" class="thumb" />
+            <% } else { %>
+              <span class="muted">—</span>
+            <% } %>
+          </td>
+          <td>
+            <strong><%= p.name %></strong>
+            <% if (p.is_imported) { %><span class="ribbon small">مستورد</span><% } %>
+          </td>
+          <td><%= p.category_name || '—' %></td>
+          <td><strong><%= formatPrice(p.selling_price) %></strong></td>
+          <td class="muted">
+            <% if (p.original_price) { %>
+              <%= formatPrice(p.original_price) %>
+            <% } else { %>
+              —
+            <% } %>
+          </td>
+          <td class="<%= p.profit.absolute > 0 ? 'ok' : 'bad' %>">
+            <%= formatPrice(p.profit.absolute) %>
+            <small>(<%= p.profit.percent.toFixed(0) %>%)</small>
+          </td>
+          <td><%= p.stock %></td>
+          <td>
+            <% if (p.source_domain) { %>
+              <a href="<%= p.source_url %>" target="_blank" rel="noopener"><%= p.source_domain %></a>
+            <% } else { %>—<% } %>
+          </td>
+          <td>
+            <span class="status status-<%= p.is_published ? 'delivered' : 'cancelled' %>">
+              <%= p.is_published ? 'منشور' : 'مسودة' %>
+            </span>
+          </td>
+          <td class="actions">
+            <a class="btn btn-ghost btn-sm" href="/product/<%= p.slug %>" target="_blank">عرض</a>
+            <a class="btn btn-secondary btn-sm" href="/admin/products/<%= p.id %>/edit">تعديل</a>
+            <form action="/admin/products/<%= p.id %>/delete" method="post" onsubmit="return confirm('هل تريد فعلاً حذف هذا المنتوج؟')" style="display:inline">
+              <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('../partials/admin-footer') %>

@@ -1,0 +1,60 @@
+{
+  "nav": { "home": "Home", "products": "Products", "cart": "Cart", "admin": "Admin", "contact": "Contact" },
+  "home": {
+    "hero_title": "Curated products from top stores",
+    "hero_sub": "We import the product, adjust the price, deliver to you",
+    "shop_now": "Shop now",
+    "featured": "Featured",
+    "all": "All products",
+    "no_products": "No products yet."
+  },
+  "product": {
+    "currency": "DH",
+    "add_to_cart": "Add to cart",
+    "out_of_stock": "Out of stock",
+    "in_stock": "In stock",
+    "description": "Description",
+    "category": "Category",
+    "category_unset": "Uncategorized",
+    "imported_from": "Imported from",
+    "share": "Share",
+    "back": "Back"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Cart is empty",
+    "continue": "Continue shopping",
+    "quantity": "Qty",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "checkout": "Checkout",
+    "clear": "Clear cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "name": "Full name",
+    "phone": "Phone",
+    "city": "City",
+    "address": "Address",
+    "notes": "Notes (optional)",
+    "submit": "Place order",
+    "success_title": "Order received!",
+    "success_msg": "We'll contact you soon.",
+    "order_number": "Order #"
+  },
+  "admin": {
+    "login_title": "Admin login",
+    "token": "Password",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "import": "Import from URL",
+    "add_manual": "Add manually",
+    "orders": "Orders",
+    "settings": "Settings"
+  },
+  "common": { "loading": "Loading…", "save": "Save", "cancel": "Cancel", "currency": "DH" }
+}

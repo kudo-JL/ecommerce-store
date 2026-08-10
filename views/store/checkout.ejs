@@ -1,0 +1,49 @@
+<%- include('../partials/store-header') %>
+
+<% const v = (typeof values !== 'undefined' && values) ? values : {}; %>
+<% const err = (typeof error !== 'undefined' && error) ? error : null; %>
+
+<section class="section">
+  <h1 class="page-title">إتمام الطلب</h1>
+  <% if (err) { %>
+    <div class="alert error"><%= err %></div>
+  <% } %>
+
+  <div class="cart-grid">
+    <form action="/checkout" method="post" class="checkout-form">
+      <label>الاسم الكامل *
+        <input name="customer_name" required class="input" value="<%= v.customer_name || '' %>" />
+      </label>
+      <label>رقم الهاتف *
+        <input name="customer_phone" required class="input" value="<%= v.customer_phone || '' %>" />
+      </label>
+      <label>المدينة
+        <input name="customer_city" class="input" value="<%= v.customer_city || '' %>" />
+      </label>
+      <label>العنوان
+        <textarea name="customer_address" class="input" rows="2"><%= v.customer_address || '' %></textarea>
+      </label>
+      <label>ملاحظات
+        <textarea name="notes" class="input" rows="2"><%= v.notes || '' %></textarea>
+      </label>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">تأكيد الطلب</button>
+    </form>
+
+    <aside class="cart-summary">
+      <h3>طلبك</h3>
+      <% items.forEach(function(it) { %>
+        <div class="row">
+          <span><%= it.name %> × <%= it.qty %></span>
+          <strong><%= formatPrice(it.price * it.qty) %></strong>
+        </div>
+      <% }); %>
+      <hr />
+      <div class="row"><span>المجموع</span><strong><%= formatPrice(cartTotals.subtotal) %></strong></div>
+      <div class="row"><span>الشحن</span><strong><%= formatPrice(shipping) %></strong></div>
+      <div class="row total"><span>الإجمالي</span><strong><%= formatPrice(cartTotals.subtotal + shipping) %></strong></div>
+      <p class="muted small" style="margin-top:10px">💡 ملاحظة: رسوم الشحن تُجمع من الزبون لتغطية تكلفة التوصيل ولا تُحتسب ضمن أرباحك.</p>
+    </aside>
+  </div>
+</section>
+
+<%- include('../partials/store-footer') %>

@@ -1,0 +1,22 @@
+{
+  "name": "ecommerce-store",
+  "version": "1.0.0",
+  "description": "Arabic dropshipping-style store — import products by URL, edit price, resell as middleman.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "init-db": "node scripts/init-db.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "multer": "^2.0.0",
+    "cheerio": "^1.0.0"
+  }
+}

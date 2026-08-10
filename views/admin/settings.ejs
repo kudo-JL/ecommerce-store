@@ -1,0 +1,50 @@
+<%- include('../partials/admin-header') %>
+
+<% function getSet(k, d) { return (typeof settings !== 'undefined' && settings && settings[k]) || d; } %>
+
+<% if (saved) { %><div class="alert ok">✅ تم حفظ الإعدادات.</div><% } %>
+
+<form action="/admin/settings" method="post" class="form-stack">
+  <fieldset>
+    <legend>معلومات المتجر</legend>
+    <label>اسم المتجر
+      <input name="store_name" class="input" value="<%= settings.store_name || '' %>" />
+    </label>
+    <label>الشعار
+      <input name="store_tagline" class="input" value="<%= settings.store_tagline || '' %>" />
+    </label>
+    <label>العملة
+      <input name="currency" class="input" value="<%= settings.currency || 'MAD' %>" />
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>التسعير</legend>
+    <label>نسبة الزيادة الافتراضية عند الاستيراد (%)
+      <input name="default_markup_pct" type="number" min="0" max="500" step="0.1" class="input" value="<%= getSet('default_markup_pct', '30') %>" />
+      <small class="muted">عند استيراد منتوج، يُقترح سعر بيع = السعر الأصلي × (1 + هذه النسبة). يمكنك تعديله قبل النشر.</small>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>الشحن (لا يدخل في الأرباح)</legend>
+    <label>رسوم الشحن الثابتة (<%= settings.currency || 'MAD' %>)
+      <input name="shipping_fee" type="number" min="0" step="0.01" class="input" value="<%= getSet('shipping_fee', '30') %>" />
+      <small class="muted">المبلغ الذي يُضاف على كل طلب تلقائياً. يمكن تعديله يدوياً لكل طلب من صفحة "الطلبات".</small>
+    </label>
+    <label>حد الشحن المجاني (<%= settings.currency || 'MAD' %>)
+      <input name="free_shipping_threshold" type="number" min="0" step="0.01" class="input" value="<%= getSet('free_shipping_threshold', '0') %>" />
+      <small class="muted">إذا كان مجموع السلة ≥ هذا المبلغ، يصبح الشحن مجانياً. اترك 0 لتعطيل الشحن المجاني.</small>
+    </label>
+  </fieldset>
+
+  <div class="alert warn">
+    <strong>تغيير كلمة مرور لوحة التحكم:</strong> افتح ملف <code>data/store.db</code> بأي أداة SQLite
+    ونفّذ: <code>UPDATE settings SET value='كلمة_جديدة' WHERE key='admin_token';</code>
+    ثم سجّل خروج وأعد الدخول.
+  </div>
+
+  <button class="btn btn-primary" type="submit">💾 حفظ الإعدادات</button>
+</form>
+
+<%- include('../partials/admin-footer') %>

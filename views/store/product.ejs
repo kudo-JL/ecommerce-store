@@ -1,0 +1,39 @@
+<%- include('../partials/store-header') %>
+
+<article class="product-detail">
+  <div class="detail-img">
+    <% if (product.image_url) { %>
+      <img src="<%= product.image_url %>" alt="<%= product.name %>" />
+    <% } else { %>
+      <div class="no-img large">لا توجد صورة</div>
+    <% } %>
+  </div>
+  <div class="detail-body">
+    <a href="/products" class="back-link">← الرجوع للمنتجات</a>
+    <h1><%= product.name %></h1>
+    <div class="meta">
+      <% if (category) { %>
+        <span class="chip">الفئة: <%= category.name %></span>
+      <% } %>
+      <span class="chip <%= product.stock > 0 ? 'ok' : 'bad' %>">
+        <%= product.stock > 0 ? 'متوفر' : 'نفد المخزون' %>
+      </span>
+      <% if (product.is_imported && product.source_domain) { %>
+        <span class="chip ghost">مستورد من: <%= product.source_domain %></span>
+      <% } %>
+    </div>
+    <div class="price-big"><%= formatPrice(product.selling_price) %></div>
+    <p class="description"><%= product.description || 'بدون وصف.' %></p>
+
+    <form action="/cart/add/<%= product.id %>" method="post" class="add-form">
+      <label>الكمية
+        <input type="number" name="qty" min="1" max="<%= product.stock || 1 %>" value="1" class="input qty" />
+      </label>
+      <button class="btn btn-primary btn-lg" <%= product.stock > 0 ? '' : 'disabled' %>>
+        <%= product.stock > 0 ? '🛒 أضف إلى السلة' : 'نفد المخزون' %>
+      </button>
+    </form>
+  </div>
+</article>
+
+<%- include('../partials/store-footer') %>

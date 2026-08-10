@@ -1,0 +1,51 @@
+# Nginx config — drop in /etc/nginx/sites-available/store, then:
+#   sudo ln -s /etc/nginx/sites-available/store /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+# Replace yourstore.com with your real domain.
+
+server {
+  listen 80;
+  server_name yourstore.com www.yourstore.com;
+
+  # Security & performance
+  gzip on;
+  gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+  client_max_body_size 5M;
+
+  # Static assets — served directly by Nginx for speed
+  location /uploads/ {
+    alias /var/www/ecommerce-store/public/uploads/;
+    expires 7d;
+    add_header Cache-Control "public, max-age=604800";
+  }
+  location /css/ {
+    alias /var/www/ecommerce-store/public/css/;
+    expires 1d;
+  }
+  location /js/ {
+    alias /var/www/ecommerce-store/public/js/;
+    expires 1d;
+  }
+  location /manifest.webmanifest {
+    alias /var/www/ecommerce-store/public/manifest.webmanifest;
+    expires 1d;
+  }
+  location /sw.js {
+    alias /var/www/ecommerce-store/public/sw.js;
+    expires 0;
+    add_header Cache-Control "no-cache";
+  }
+
+  # Everything else → Node app
+  location / {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_cache_bypass $http_upgrade;
+  }
+}

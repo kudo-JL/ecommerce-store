@@ -1,0 +1,75 @@
+<%- include('../partials/admin-header') %>
+
+<section class="import-section">
+  <h2>الصق رابط المنتوج من أي متجر</h2>
+  <p class="muted">سيتم جلب الاسم، الوصف، الصورة، والسعر تلقائياً. ستعدّل السعر قبل النشر.</p>
+
+  <form action="/admin/import/preview" method="post" class="import-form">
+    <div class="url-row">
+      <input name="url" type="url" class="input lg" required value="<%= formUrl || '' %>"
+             placeholder="https://www.amazon.com/dp/B0XXXXXX  أو  https://www.aliexpress.com/item/...." />
+      <button class="btn btn-primary" type="submit">🔍 جلب المعطيات</button>
+    </div>
+  </form>
+
+  <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+
+  <% if (preview) { %>
+    <div class="alert info">
+      ✅ تم استخراج المعطيات. عدّل ما تريد ثم اضغط <strong>نشر في المتجر</strong>.
+      <br /><small>السعر الأصلي مخفي عن الزبون. سعر البيع هو ما سيدفعه الزبون.</small>
+    </div>
+
+    <form action="/admin/import/publish" method="post" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="source_url" value="<%= preview.source_url %>" />
+      <input type="hidden" name="source_domain" value="<%= preview.source_domain %>" />
+      <input type="hidden" name="currency" value="<%= preview.currency %>" />
+
+      <div class="form-main">
+        <label>الاسم
+          <input name="name" required class="input" value="<%= preview.name %>" />
+        </label>
+        <label>الوصف
+          <textarea name="description" class="input" rows="6"><%= preview.description %></textarea>
+        </label>
+
+        <div class="form-row">
+          <label>السعر الأصلي (لحساب الربح — مخفي)
+            <input name="original_price" type="number" step="0.01" min="0" class="input" value="<%= preview.original_price %>" />
+            <small class="muted">من الموقع الأصلي: <%= preview.currency %></small>
+          </label>
+          <label>سعر البيع (يظهر للزبون) *
+            <input name="selling_price" type="number" step="0.01" min="0" required class="input" value="<%= preview.selling_price %>" />
+            <small class="muted">💡 راجع هذا الرقم — هو ما سيدفعه الزبون. غيّره إن لزم.</small>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>المخزون
+            <input name="stock" type="number" min="0" class="input" value="5" />
+          </label>
+          <label>الفئة
+            <input name="new_category" class="input" placeholder="اكتب اسم فئة جديدة (اختياري)" />
+          </label>
+        </div>
+      </div>
+
+      <aside class="form-side">
+        <% if (preview.image_url) { %>
+          <img src="<%= preview.image_url %>" alt="" class="preview-img" />
+          <input type="hidden" name="image_url" value="<%= preview.image_url %>" />
+        <% } else { %>
+          <div class="no-img">لا توجد صورة</div>
+        <% } %>
+        <label>أو ارفع صورة بديلة
+          <input name="image" type="file" accept="image/*" class="input" />
+        </label>
+        <a href="<%= preview.source_url %>" target="_blank" rel="noopener" class="muted small">عرض المصدر: <%= preview.source_domain %></a>
+        <button class="btn btn-primary btn-block" type="submit">🚀 نشر في المتجر</button>
+        <a href="/admin/import" class="btn btn-ghost btn-block">إلغاء</a>
+      </aside>
+    </form>
+  <% } %>
+</section>
+
+<%- include('../partials/admin-footer') %>

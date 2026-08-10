@@ -1,0 +1,30 @@
+<%- include('../partials/store-header') %>
+
+<section class="section">
+  <h1 class="page-title">جميع المنتجات</h1>
+
+  <form class="filters" method="get" action="/products">
+    <input type="search" name="q" value="<%= q %>" placeholder="ابحث عن منتوج…" class="input" />
+    <% if (categories.length) { %>
+      <select name="cat" class="input">
+        <option value="">كل الفئات</option>
+        <% categories.forEach(function(c) { %>
+          <option value="<%= c.id %>" <%= activeCat === c.id ? 'selected' : '' %>><%= c.name %></option>
+        <% }); %>
+      </select>
+    <% } %>
+    <button class="btn btn-primary">تصفية</button>
+  </form>
+
+  <% if (!products.length) { %>
+    <p class="empty">لا توجد منتجات تطابق البحث.</p>
+  <% } else { %>
+    <div class="product-grid">
+      <% products.forEach(function(p) { %>
+        <%- include('partials/product-card', { p: p }) %>
+      <% }); %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/store-footer') %>

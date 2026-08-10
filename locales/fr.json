@@ -1,0 +1,60 @@
+{
+  "nav": { "home": "Accueil", "products": "Produits", "cart": "Panier", "admin": "Admin", "contact": "Contact" },
+  "home": {
+    "hero_title": "Produits choisis depuis les meilleures boutiques",
+    "hero_sub": "On importe le produit, on ajuste le prix, on vous le livre",
+    "shop_now": "Acheter",
+    "featured": "Produits en vedette",
+    "all": "Tous les produits",
+    "no_products": "Aucun produit."
+  },
+  "product": {
+    "currency": "DH",
+    "add_to_cart": "Ajouter au panier",
+    "out_of_stock": "Rupture de stock",
+    "in_stock": "En stock",
+    "description": "Description",
+    "category": "Catégorie",
+    "category_unset": "Sans catégorie",
+    "imported_from": "Importé de",
+    "share": "Partager",
+    "back": "Retour"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Panier vide",
+    "continue": "Continuer les achats",
+    "quantity": "Quantité",
+    "remove": "Retirer",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "total": "Total",
+    "checkout": "Commander",
+    "clear": "Vider le panier"
+  },
+  "checkout": {
+    "title": "Finaliser la commande",
+    "name": "Nom complet",
+    "phone": "Téléphone",
+    "city": "Ville",
+    "address": "Adresse",
+    "notes": "Notes (optionnel)",
+    "submit": "Confirmer",
+    "success_title": "Commande reçue !",
+    "success_msg": "Nous vous contacterons bientôt.",
+    "order_number": "N° de commande"
+  },
+  "admin": {
+    "login_title": "Connexion admin",
+    "token": "Mot de passe",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "dashboard": "Tableau de bord",
+    "products": "Produits",
+    "import": "Importer depuis URL",
+    "add_manual": "Ajouter manuellement",
+    "orders": "Commandes",
+    "settings": "Paramètres"
+  },
+  "common": { "loading": "Chargement…", "save": "Enregistrer", "cancel": "Annuler", "currency": "DH" }
+}

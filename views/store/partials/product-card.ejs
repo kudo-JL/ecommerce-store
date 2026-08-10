@@ -1,0 +1,27 @@
+<%# expects: p (product) %>
+<article class="card product-card">
+  <a class="card-img" href="/product/<%= p.slug %>">
+    <% if (p.image_url) { %>
+      <img src="<%= p.image_url %>" alt="<%= p.name %>" loading="lazy" />
+    <% } else { %>
+      <div class="no-img">لا توجد صورة</div>
+    <% } %>
+    <% if (p.is_imported) { %>
+      <span class="ribbon">مستورد</span>
+    <% } %>
+  </a>
+  <div class="card-body">
+    <h3 class="card-title">
+      <a href="/product/<%= p.slug %>"><%= p.name %></a>
+    </h3>
+    <div class="card-price">
+      <%= formatPrice(p.selling_price) %>
+    </div>
+    <form action="/cart/add/<%= p.id %>" method="post" class="card-form">
+      <input type="hidden" name="qty" value="1" />
+      <button class="btn btn-primary btn-sm" <%= p.stock > 0 ? '' : 'disabled' %>>
+        <%= p.stock > 0 ? 'أضف للسلة' : 'نفد المخزون' %>
+      </button>
+    </form>
+  </div>
+</article>

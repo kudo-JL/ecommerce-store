@@ -1,0 +1,27 @@
+<%- include('../partials/store-header') %>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>منتجات مختارة من أفضل المتاجر</h1>
+    <p>نستورد لك المنتوج، نعدّل السعر، ونوصّله لك.</p>
+    <a href="/products" class="btn btn-primary btn-lg">تسوّق الآن</a>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">منتجات مميّزة</h2>
+  <% if (!featured.length) { %>
+    <p class="empty">لا توجد منتجات بعد. أضف منتجات من لوحة التحكم.</p>
+  <% } else { %>
+    <div class="product-grid">
+      <% featured.forEach(function(p) { %>
+        <%- include('partials/product-card', { p: p }) %>
+      <% }); %>
+    </div>
+    <div class="center mt-3">
+      <a href="/products" class="btn btn-ghost">عرض كل المنتجات ←</a>
+    </div>
+  <% } %>
+</section>
+
+<%- include('../partials/store-footer') %>

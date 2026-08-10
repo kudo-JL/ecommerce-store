@@ -1,0 +1,16 @@
+{
+  "packageId": "com.yourstore.app",
+  "host": "yourstore.com",
+  "name": "متجري",
+  "launcherName": "متجري",
+  "display": "standalone",
+  "themeColor": "#e11d48",
+  "backgroundColor": "#ffffff",
+  "iconUrl": "https://yourstore.com/uploads/icon-512.png",
+  "splashColor": "#ffffff",
+  "enableNotifications": false,
+  "signing": {
+    "key": "/path/to/android.keystore",
+    "alias": "my-key-alias"
+  }
+}
