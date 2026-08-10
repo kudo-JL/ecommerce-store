@@ -1,7 +1,7 @@
 /**
  * E-commerce store — main server.
  *   Run: npm install && npm start
- *   Admin: http://localhost:3000/admin   (default password: admin123 — change in /admin/settings)
+ *   Admin: http://localhost:3000/admin   (default password: JL@kudo92 — change in /admin/settings)
  */
 const path = require('path');
 const fs = require('fs');
