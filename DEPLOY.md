@@ -82,7 +82,7 @@ node scripts/seed.js
 
 **روابط مهمة:**
 - المتجر: `https://your-app.up.railway.app/`
-- لوحة التحكم: `https://your-app.up.railway.app/admin/` (كلمة المرور: `admin123`)
+- لوحة التحكم: `https://your-app.up.railway.app/admin/` (كلمة المرور: `JL@kudo92`)
 
 > ⚠️ **غيّر كلمة المرور فوراً** من الإعدادات بعد أول دخول.
 
