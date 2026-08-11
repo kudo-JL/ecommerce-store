@@ -1,7 +1,7 @@
 /**
  * E-commerce store — main server.
  *   Run: npm install && npm start
- *   Admin: http://localhost:3000/admin   (default password: JL@kudo92 — change in /admin/settings)
+ *   Admin: http://localhost:3000/admin   (default password: admin123 — change in /admin/settings)
  */
 const path = require('path');
 const fs = require('fs');
@@ -9,9 +9,10 @@ const express = require('express');
 
 const db = require('./lib/db');
 const auth = require('./lib/auth');
+const uploadsLib = require('./lib/uploads');
 
 const app = express();
-const PORT = process.env.PORT || 3007;
+const PORT = process.env.PORT || 3000;
 
 /* ---------- View engine ---------- */
 app.set('view engine', 'ejs');
@@ -20,7 +21,23 @@ app.set('views', path.join(__dirname, 'views'));
 /* ---------- Middleware ---------- */
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { maxAge: '7d' }));
+
+/* Serve /uploads/* from BOTH the persistent runtime dir and the static
+ * (git-tracked) dir. Persistent dir wins for files that exist in both.
+ * This means PWA icons (in public/uploads) AND user uploads (in
+ * /app/data/uploads on Railway) all work at /uploads/<filename>.
+ */
+app.use('/uploads', (req, res, next) => {
+  const filename = path.basename(req.path);
+  if (!filename || filename === '.' || filename === '..') return next();
+  const persistent = uploadsLib.uploadsDir();
+  const persistentFile = path.join(persistent, filename);
+  if (fs.existsSync(persistentFile)) {
+    return express.static(persistent, { maxAge: '7d' })(req, res, next);
+  }
+  return express.static(uploadsLib.staticUploadsDir(), { maxAge: '7d' })(req, res, next);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* expose settings + auth status to all views */

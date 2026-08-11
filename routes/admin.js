@@ -12,26 +12,30 @@ const auth = require('../lib/auth');
 const { scrapeProduct } = require('../lib/scraper');
 const { slugify, uniqueSlug, formatPrice, profitOf } = require('../lib/helpers');
 const { t, pickLang } = require('../lib/i18n');
+const uploadsLib = require('../lib/uploads');
 
-const UPLOAD_DIR = path.join(__dirname, '..', 'public', 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+const UPLOAD_DIR = uploadsLib.uploadsDir();
 
-/* ---------- multer 2.x — disk storage for product images ---------- */
+/* ---------- multer 2.x — disk storage for product images ----------
+ * Saves to the persistent volume (/app/data/uploads on Railway) so
+ * images survive redeployments.
+ */
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
   filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase() || '.jpg';
+    const ext = (path.extname(file.originalname).toLowerCase() || '.jpg')
+      .replace(/^\.jfif$/, '.jpg'); // normalize JFIF → JPEG
     const safe = file.originalname
       .replace(/[^a-zA-Z0-9._-]/g, '_')
       .slice(0, 40);
-    cb(null, Date.now().toString(36) + '_' + safe.replace(ext, '') + ext);
+    cb(null, Date.now().toString(36) + '_' + safe.replace(/\.[^.]+$/, '') + ext);
   },
 });
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (/^image\/(png|jpe?g|webp|gif)$/i.test(file.mimetype)) return cb(null, true);
+    if (/^image\/(png|jpe?g|webp|gif|jfif)$/i.test(file.mimetype)) return cb(null, true);
     cb(new Error('Only image files are allowed'));
   },
 });
