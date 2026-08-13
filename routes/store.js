@@ -7,6 +7,7 @@ const path = require('path');
 
 const db = require('../lib/db');
 const cartLib = require('../lib/cart');
+const notifier = require('../lib/notifier');
 const { t, pickLang } = require('../lib/i18n');
 const { formatPrice, profitOf } = require('../lib/helpers');
 
@@ -226,6 +227,21 @@ router.post('/checkout', (req, res) => {
     );
     db.run('UPDATE products SET stock = MAX(0, stock - ?) WHERE id = ?', [it.qty, Number(pid)]);
   }
+
+  // Reload order + items so we have canonical created_at & subtotal/total
+  const savedOrder = db.get('SELECT * FROM orders WHERE id = ?', [orderId]);
+  const orderItems = db.all('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
+
+  // 🔔 Fire notifications (email + WhatsApp). Don't block the response.
+  // If a channel fails, the order is still saved.
+  notifier
+    .notifyNewOrder(savedOrder, orderItems, getSetting('store_name', 'متجري'))
+    .then((r) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[notifier]', JSON.stringify(r));
+      }
+    })
+    .catch((e) => console.error('[notifier] fatal:', e));
 
   cartLib.clear(res);
   res.render('store/order-success', {

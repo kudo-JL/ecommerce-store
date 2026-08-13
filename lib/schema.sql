@@ -64,13 +64,35 @@ CREATE TABLE IF NOT EXISTS order_items (
 
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 
+-- Notification log
+CREATE TABLE IF NOT EXISTS notification_log (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id   INTEGER,
+  channel    TEXT,    -- 'email' | 'whatsapp'
+  status     TEXT,    -- 'sent' | 'failed'
+  detail     TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_notification_log_order ON notification_log(order_id);
+
 -- Seed default settings
 INSERT OR IGNORE INTO settings(key, value) VALUES
   ('store_name', 'متجري'),
   ('store_tagline', 'متجرك الوسيط — منتجات مختارة بأسعار مناسبة'),
   ('currency', 'MAD'),
   ('language', 'ar'),
-  ('admin_token', 'JL@kudo92'),
+  ('admin_token', 'admin123'),
   ('default_markup_pct', '30'),
   ('shipping_fee', '30'),
-  ('free_shipping_threshold', '0');  -- 0 = never free. e.g. 500 = free over 500 MAD
+  ('free_shipping_threshold', '0'),  -- 0 = never free. e.g. 500 = free over 500 MAD
+
+  -- Email notifications (Gmail SMTP via App Password)
+  ('notify_email_enabled', '0'),
+  ('notify_email_to', ''),         -- recipient (e.g. you@gmail.com)
+  ('notify_email_from', ''),       -- sender (e.g. store@gmail.com, must match App Password)
+
+  -- WhatsApp notifications (CallMeBot free API)
+  ('notify_whatsapp_enabled', '0'),
+  ('notify_whatsapp_phone', ''),   -- international format, e.g. +2126XXXXXXXX
+  ('notify_whatsapp_apikey', '');  -- from CallMeBot registration

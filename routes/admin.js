@@ -9,6 +9,7 @@ const fs = require('fs');
 
 const db = require('../lib/db');
 const auth = require('../lib/auth');
+const notifier = require('../lib/notifier');
 const { scrapeProduct } = require('../lib/scraper');
 const { slugify, uniqueSlug, formatPrice, profitOf } = require('../lib/helpers');
 const { t, pickLang } = require('../lib/i18n');
@@ -463,14 +464,39 @@ router.get('/settings', (req, res) => {
 });
 
 router.post('/settings', (req, res) => {
-  const { store_name, store_tagline, currency, default_markup_pct, shipping_fee, free_shipping_threshold } = req.body;
+  const {
+    store_name, store_tagline, currency,
+    default_markup_pct, shipping_fee, free_shipping_threshold,
+    notify_email_enabled, notify_email_to, notify_email_from,
+    notify_whatsapp_enabled, notify_whatsapp_phone, notify_whatsapp_apikey,
+  } = req.body || {};
+
   if (store_name !== undefined) setSetting('store_name', String(store_name).trim());
   if (store_tagline !== undefined) setSetting('store_tagline', String(store_tagline).trim());
   if (currency) setSetting('currency', currency.trim());
-  if (default_markup_pct !== undefined) setSetting('default_markup_pct', String(Number(default_markup_pct) || 0));
+  if (default_markup_pct !== undefined) setSetting('default_markup_pct', String(Math.max(0, Number(default_markup_pct) || 0)));
   if (shipping_fee !== undefined) setSetting('shipping_fee', String(Math.max(0, Number(shipping_fee) || 0)));
   if (free_shipping_threshold !== undefined) setSetting('free_shipping_threshold', String(Math.max(0, Number(free_shipping_threshold) || 0)));
+
+  // Notifications
+  setSetting('notify_email_enabled', notify_email_enabled === 'on' || notify_email_enabled === '1' ? '1' : '0');
+  setSetting('notify_email_to',      String(notify_email_to || '').trim());
+  setSetting('notify_email_from',    String(notify_email_from || '').trim());
+  setSetting('notify_whatsapp_enabled', notify_whatsapp_enabled === 'on' || notify_whatsapp_enabled === '1' ? '1' : '0');
+  setSetting('notify_whatsapp_phone',   String(notify_whatsapp_phone || '').trim());
+  setSetting('notify_whatsapp_apikey',  String(notify_whatsapp_apikey || '').trim());
+
   res.redirect('/admin/settings?ok=1');
+});
+
+// Resend notifications for an order (useful if a channel was down)
+router.post('/orders/:id/notify', async (req, res) => {
+  const order = db.get('SELECT * FROM orders WHERE id = ?', [req.params.id]);
+  if (!order) return res.redirect('/admin/orders');
+  const items = db.all('SELECT * FROM order_items WHERE order_id = ?', [order.id]);
+  const storeName = getSetting('store_name', 'متجري');
+  const result = await notifier.notifyNewOrder(order, items, storeName);
+  res.redirect('/admin/orders?ok=notified&email=' + (result.email?.ok ? 1 : 0) + '&wa=' + (result.whatsapp?.ok ? 1 : 0));
 });
 
 module.exports = router;

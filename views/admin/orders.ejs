@@ -26,6 +26,9 @@
               <% }); %>
             </select>
           </form>
+          <form action="/admin/orders/<%= o.id %>/notify" method="post" class="inline" title="إعادة إرسال الإشعار">
+            <button class="btn btn-secondary btn-sm" type="submit">🔔 إعادة إشعار</button>
+          </form>
           <form action="/admin/orders/<%= o.id %>/delete" method="post" class="inline" onsubmit="return confirm('حذف الطلب؟')">
             <button class="btn btn-danger btn-sm" type="submit">حذف</button>
           </form>
