@@ -39,22 +39,21 @@
   </fieldset>
 
   <fieldset>
-    <legend>📧 إشعارات البريد (Gmail — مجاني)</legend>
+    <legend>📱 إشعارات Telegram (مجاني)</legend>
     <label class="check">
-      <input type="checkbox" name="notify_email_enabled" <%= getSet('notify_email_enabled', '0') === '1' ? 'checked' : '' %> />
-      <span>تفعيل الإشعارات عبر البريد</span>
+      <input type="checkbox" name="notify_telegram_enabled" <%= getSet('notify_telegram_enabled', '0') === '1' ? 'checked' : '' %> />
+      <span>تفعيل الإشعارات عبر Telegram</span>
     </label>
-    <label>إيميل المُرسِل (Gmail)
-      <input name="notify_email_from" type="email" class="input" value="<%= getSet('notify_email_from', '') %>" placeholder="yourstore@gmail.com" />
-      <small class="muted">يجب أن يكون Gmail، ولازم تضيف App Password في Railway (انظر التعليمات).</small>
+    <label>Bot Token
+      <input name="notify_telegram_bot_token" class="input" value="<%= getSet('notify_telegram_bot_token', '') %>" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" />
+      <small class="muted">من @BotFather على Telegram: أرسل /newbot واتبع الخطوات.</small>
     </label>
-    <label>إيميل الاستلام
-      <input name="notify_email_to" type="email" class="input" value="<%= getSet('notify_email_to', '') %>" placeholder="you@gmail.com" />
-      <small class="muted">الإيميل الذي تستلم عليه إشعار كل طلب جديد.</small>
+    <label>Chat ID (رقمك الشخصي على Telegram)
+      <input name="notify_telegram_chat_id" class="input" value="<%= getSet('notify_telegram_chat_id', '') %>" placeholder="مثال: 987654321" />
+      <small class="muted">رقم 10 خانات. احصل عليه من @userinfobot أو @RawDataBot أو <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code>.</small>
     </label>
     <div class="alert info">
-      <strong>🔐 App Password:</strong> أضف متغير <code>GMAIL_APP_PASSWORD</code> في Railway → Variables
-      (مو في هذا الفورم للأمان). القيمة: كلمة مرور 16 حرف من Google Account → Security → App passwords.
+      <strong>⚠️ مهم:</strong> لازم تفتح الـ bot في Telegram وتضغط <strong>Start</strong> (أو ترسل <code>/start</code>) مرة وحدة قبل ما يشتغل الإرسال.
     </div>
   </fieldset>
 
@@ -70,7 +69,7 @@
     </label>
     <label>CallMeBot API Key
       <input name="notify_whatsapp_apikey" class="input" value="<%= getSet('notify_whatsapp_apikey', '') %>" placeholder="مثال: 1234567" />
-      <small class="muted">احصل عليه: أرسل "I allow callmebot to send me messages" إلى +34 644 59 71 47 على WhatsApp، ثم ردّ على الرسالة بكلمة "I allow".</small>
+      <small class="muted">احصل عليه: أرسل "I allow callmebot to send me messages" إلى +34 623 91 22 04 على WhatsApp.</small>
     </label>
   </fieldset>
 

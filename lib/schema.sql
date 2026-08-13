@@ -68,7 +68,7 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 CREATE TABLE IF NOT EXISTS notification_log (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id   INTEGER,
-  channel    TEXT,    -- 'email' | 'whatsapp'
+  channel    TEXT,    -- 'telegram' | 'whatsapp'
   status     TEXT,    -- 'sent' | 'failed'
   detail     TEXT,
   created_at TEXT DEFAULT (datetime('now'))
@@ -87,10 +87,10 @@ INSERT OR IGNORE INTO settings(key, value) VALUES
   ('shipping_fee', '30'),
   ('free_shipping_threshold', '0'),  -- 0 = never free. e.g. 500 = free over 500 MAD
 
-  -- Email notifications (Gmail SMTP via App Password)
-  ('notify_email_enabled', '0'),
-  ('notify_email_to', ''),         -- recipient (e.g. you@gmail.com)
-  ('notify_email_from', ''),       -- sender (e.g. store@gmail.com, must match App Password)
+  -- Telegram notifications (free via Bot API)
+  ('notify_telegram_enabled', '0'),
+  ('notify_telegram_bot_token', ''),  -- from @BotFather
+  ('notify_telegram_chat_id', ''),    -- your personal chat id (10-digit number)
 
   -- WhatsApp notifications (CallMeBot free API)
   ('notify_whatsapp_enabled', '0'),

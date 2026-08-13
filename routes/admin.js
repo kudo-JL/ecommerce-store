@@ -467,7 +467,7 @@ router.post('/settings', (req, res) => {
   const {
     store_name, store_tagline, currency,
     default_markup_pct, shipping_fee, free_shipping_threshold,
-    notify_email_enabled, notify_email_to, notify_email_from,
+    notify_telegram_enabled, notify_telegram_bot_token, notify_telegram_chat_id,
     notify_whatsapp_enabled, notify_whatsapp_phone, notify_whatsapp_apikey,
   } = req.body || {};
 
@@ -478,10 +478,12 @@ router.post('/settings', (req, res) => {
   if (shipping_fee !== undefined) setSetting('shipping_fee', String(Math.max(0, Number(shipping_fee) || 0)));
   if (free_shipping_threshold !== undefined) setSetting('free_shipping_threshold', String(Math.max(0, Number(free_shipping_threshold) || 0)));
 
-  // Notifications
-  setSetting('notify_email_enabled', notify_email_enabled === 'on' || notify_email_enabled === '1' ? '1' : '0');
-  setSetting('notify_email_to',      String(notify_email_to || '').trim());
-  setSetting('notify_email_from',    String(notify_email_from || '').trim());
+  // Telegram
+  setSetting('notify_telegram_enabled',  notify_telegram_enabled === 'on' || notify_telegram_enabled === '1' ? '1' : '0');
+  setSetting('notify_telegram_bot_token', String(notify_telegram_bot_token || '').trim());
+  setSetting('notify_telegram_chat_id',   String(notify_telegram_chat_id || '').trim());
+
+  // WhatsApp (CallMeBot)
   setSetting('notify_whatsapp_enabled', notify_whatsapp_enabled === 'on' || notify_whatsapp_enabled === '1' ? '1' : '0');
   setSetting('notify_whatsapp_phone',   String(notify_whatsapp_phone || '').trim());
   setSetting('notify_whatsapp_apikey',  String(notify_whatsapp_apikey || '').trim());
@@ -489,14 +491,14 @@ router.post('/settings', (req, res) => {
   res.redirect('/admin/settings?ok=1');
 });
 
-// Resend notifications for an order (useful if a channel was down)
+// Resend notifications for an order
 router.post('/orders/:id/notify', async (req, res) => {
   const order = db.get('SELECT * FROM orders WHERE id = ?', [req.params.id]);
   if (!order) return res.redirect('/admin/orders');
   const items = db.all('SELECT * FROM order_items WHERE order_id = ?', [order.id]);
   const storeName = getSetting('store_name', 'متجري');
   const result = await notifier.notifyNewOrder(order, items, storeName);
-  res.redirect('/admin/orders?ok=notified&email=' + (result.email?.ok ? 1 : 0) + '&wa=' + (result.whatsapp?.ok ? 1 : 0));
+  res.redirect('/admin/orders?ok=notified&tg=' + (result.telegram?.ok ? 1 : 0) + '&wa=' + (result.whatsapp?.ok ? 1 : 0));
 });
 
 module.exports = router;
