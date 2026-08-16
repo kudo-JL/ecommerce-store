@@ -60,6 +60,17 @@ function adminBase(req) {
       store_name: getSetting('store_name'),
       store_tagline: getSetting('store_tagline'),
       currency: getSetting('currency'),
+      // pricing
+      default_markup_pct: getSetting('default_markup_pct', '30'),
+      shipping_fee: getSetting('shipping_fee', '30'),
+      free_shipping_threshold: getSetting('free_shipping_threshold', '0'),
+      // notifications
+      notify_telegram_enabled: getSetting('notify_telegram_enabled', '0'),
+      notify_telegram_bot_token: getSetting('notify_telegram_bot_token', ''),
+      notify_telegram_chat_id: getSetting('notify_telegram_chat_id', ''),
+      notify_whatsapp_enabled: getSetting('notify_whatsapp_enabled', '0'),
+      notify_whatsapp_phone: getSetting('notify_whatsapp_phone', ''),
+      notify_whatsapp_apikey: getSetting('notify_whatsapp_apikey', ''),
     },
     activeNav: '',
   };
