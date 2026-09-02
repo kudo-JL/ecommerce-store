@@ -30,7 +30,7 @@ function viewBase(req) {
     t: (k, v) => t(pickLang(req), k, v),
     dir: 'rtl',
     lang: 'ar',
-    storeName: getSetting('store_name', 'متجري رياضي'),
+    storeName: getSetting('store_name', 'متجر رياضي'),
     storeTagline: getSetting('store_tagline', ''),
     currency: getSetting('currency', 'MAD'),
     settings: {
@@ -56,7 +56,7 @@ router.get('/', attachCart, (req, res) => {
   );
   res.render('store/index', {
     ...viewBase(req),
-    title: getSetting('store_name', 'متجري رياضي'),
+    title: getSetting('store_name', 'متجر رياضي'),
     featured,
     activeNav: 'home',
   });
@@ -235,7 +235,7 @@ router.post('/checkout', (req, res) => {
   // 🔔 Fire notifications (email + WhatsApp). Don't block the response.
   // If a channel fails, the order is still saved.
   notifier
-    .notifyNewOrder(savedOrder, orderItems, getSetting('store_name', 'متجري'))
+    .notifyNewOrder(savedOrder, orderItems, getSetting('store_name', 'متجر رياضي'))
     .then((r) => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('[notifier]', JSON.stringify(r));
