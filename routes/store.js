@@ -250,6 +250,12 @@ router.post('/checkout', (req, res) => {
     orderId,
     activeNav: 'cart',
   });
+  // ---- Set language cookie ----
+router.get('/lang/:code', (req, res) => {
+  const { SUPPORTED } = require('../lib/i18n');
+  const code = SUPPORTED.includes(req.params.code) ? req.params.code : 'ar';
+  res.cookie('lang', code, { maxAge: 1000 * 60 * 60 * 24 * 365, sameSite: 'lax' });
+  res.redirect(req.query.next || '/');
 });
 // ---- Legal pages: Privacy / Terms / Return ----
 // Each legal page is rendered in the language chosen via ?lang= or cookie/header.
