@@ -56,7 +56,7 @@ router.get('/', attachCart, (req, res) => {
   );
   res.render('store/index', {
     ...viewBase(req),
-    title: getSetting('store_name', 'متجري'),
+    title: getSetting('store_name', 'متجري رياضي'),
     featured,
     activeNav: 'home',
   });
