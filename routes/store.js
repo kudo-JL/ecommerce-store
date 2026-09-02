@@ -251,5 +251,36 @@ router.post('/checkout', (req, res) => {
     activeNav: 'cart',
   });
 });
+// ---- Set language cookie ----
+router.get('/lang/:code', (req, res) => {
+  const { SUPPORTED } = require('../lib/i18n');
+  const code = SUPPORTED.includes(req.params.code) ? req.params.code : 'ar';
+  res.cookie('lang', code, { maxAge: 1000 * 60 * 60 * 24 * 365, sameSite: 'lax' });
+  res.redirect(req.query.next || '/');
+});
+
+// ---- Legal pages: Privacy / Terms / Return ----
+// Each legal page is rendered in the language chosen via ?lang= or cookie/header.
+// Content of each language is in a dedicated EJS template.
+router.get('/privacy', (req, res) => {
+  const lang = res.locals.lang || 'ar';
+  const tpl = `public/privacy-${lang}`;
+  const titleMap = { ar: 'سياسة الخصوصية', fr: 'Politique de Confidentialité', en: 'Privacy Policy' };
+  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+});
+
+router.get('/terms', (req, res) => {
+  const lang = res.locals.lang || 'ar';
+  const tpl = `public/terms-${lang}`;
+  const titleMap = { ar: 'شروط الاستخدام', fr: 'Conditions d\'Utilisation', en: 'Terms of Service' };
+  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+});
+
+router.get('/return', (req, res) => {
+  const lang = res.locals.lang || 'ar';
+  const tpl = `public/return-${lang}`;
+  const titleMap = { ar: 'سياسة الإرجاع', fr: 'Politique de Retour', en: 'Return Policy' };
+  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+});
 
 module.exports = router;
