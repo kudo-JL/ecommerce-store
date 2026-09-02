@@ -30,7 +30,7 @@ function viewBase(req) {
     t: (k, v) => t(pickLang(req), k, v),
     dir: 'rtl',
     lang: 'ar',
-    storeName: getSetting('store_name', 'متجري'),
+    storeName: getSetting('store_name', 'متجري رياضي'),
     storeTagline: getSetting('store_tagline', ''),
     currency: getSetting('currency', 'MAD'),
     settings: {
