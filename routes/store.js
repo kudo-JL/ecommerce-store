@@ -250,5 +250,6 @@ router.post('/checkout', (req, res) => {
     orderId,
     activeNav: 'cart',
   });
+});
 
 module.exports = router;
