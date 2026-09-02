@@ -249,6 +249,6 @@ router.post('/checkout', (req, res) => {
     title: 'تم استلام الطلب',
     orderId,
     activeNav: 'cart',
-  });
+});
 
 module.exports = router;
