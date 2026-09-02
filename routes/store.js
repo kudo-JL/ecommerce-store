@@ -263,21 +263,21 @@ router.get('/lang/:code', (req, res) => {
 router.get('/privacy', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `public/privacy-${lang}`;
-  const titleMap = { ar: 'سياسة الخصوصية',};
+  const titleMap = { ar: 'سياسة الخصوصية', };
   res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
 });
 
 router.get('/terms', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `public/terms-${lang}`;
-  const titleMap = { ar: 'شروط الاستخدام',};
+  const titleMap = { ar: 'شروط الاستخدام', };
   res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
 });
 
 router.get('/return', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `public/return-${lang}`;
-  const titleMap = { ar: 'سياسة الإرجاع', fr:};
+  const titleMap = { ar: 'سياسة الإرجاع', };
   res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
 });
 
