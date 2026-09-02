@@ -257,22 +257,22 @@ router.post('/checkout', (req, res) => {
 router.get('/privacy', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `store/privacy-${lang}`;
-  const titleMap = { ar: 'سياسة الخصوصية' };
-  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+  const titleMap = { 'سياسة الخصوصية' };
+  res.render(tpl, { title: `${titleMap[lang]} | ${res.locals.site.name}` });
 });
 
 router.get('/terms', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `store/terms-${lang}`;
-  const titleMap = { ar: 'شروط الاستخدام' };
-  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+  const titleMap = { 'شروط الاستخدام' };
+  res.render(tpl, { title: `${titleMap[lang]} | ${res.locals.site.name}` });
 });
 
 router.get('/return', (req, res) => {
   const lang = res.locals.lang || 'ar';
   const tpl = `store/return-${lang}`;
-  const titleMap = { ar: 'سياسة الإرجاع' };
-  res.render(tpl, { title: `${titleMap[lang] || titleMap.ar} | ${res.locals.site.name}` });
+  const titleMap = { 'سياسة الإرجاع' };
+  res.render(tpl, { title: `${titleMap[lang]} | ${res.locals.site.name}` });
 });
 
 module.exports = router;
