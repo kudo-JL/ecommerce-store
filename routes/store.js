@@ -251,5 +251,16 @@ router.post('/checkout', (req, res) => {
     activeNav: 'cart',
   });
 });
+// Legal pages (Arabic only — EN/FR removed)
+router.get('/privacy', (req, res) => {
+  res.render('legal/privacy-ar', { ...viewBase(req), title: 'سياسة الخصوصية' });
+});
 
+router.get('/terms', (req, res) => {
+  res.render('legal/terms-ar', { ...viewBase(req), title: 'شروط الاستخدام' });
+});
+
+router.get('/return', (req, res) => {
+  res.render('legal/return-ar', { ...viewBase(req), title: 'سياسة الإرجاع' });
+});
 module.exports = router;
