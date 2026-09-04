@@ -171,7 +171,7 @@ router.post('/cart/clear', (req, res) => {
   return res.redirect('/cart');
 });
 
-/* ---------- CHECKOUT ---------- */
+/* ---------- CHECKOUT (GET) ---------- */
 router.get('/checkout', attachCart, (req, res) => {
   const items = Object.entries(res.locals.cart.items || {}).map(([id, it]) => ({ id, ...it }));
   if (!items.length) return res.redirect('/cart');
@@ -183,26 +183,29 @@ router.get('/checkout', attachCart, (req, res) => {
     items,
     shipping,
     error: null,
-    values: {},     // <-- FIX: always pass values to template
+    values: {},
     activeNav: 'cart',
   });
 });
 
+/* ---------- CHECKOUT (POST) - SHOW ANNOUNCEMENT ---------- */
 router.post('/checkout', (req, res) => {
   const { customer_name, customer_phone, customer_city, customer_address, notes } = req.body || {};
   const cart = cartLib.readCart(req);
   const items = Object.entries(cart.items || {});
+
   if (!items.length) return res.redirect('/cart');
 
-  const subtotal = items.reduce((s, [, it]) => s + (it.price || 0) * (it.qty || 0), 0);
+  const itemsArr = items.map(([id, it]) => ({ id, ...it }));
+  const subtotal = itemsArr.reduce((s, it) => s + (it.price || 0) * (it.qty || 0), 0);
   const shipping = calcShipping(subtotal);
-  const total = subtotal + shipping;
 
+  // Validation only — show error if missing fields
   if (!customer_name || !customer_phone) {
     return res.status(400).render('store/checkout', {
       ...viewBase(req),
       title: 'إتمام الطلب',
-      items: items.map(([id, it]) => ({ id, ...it })),
+      items: itemsArr,
       shipping,
       error: 'الاسم والهاتف مطلوبان',
       values: req.body || {},
@@ -210,6 +213,32 @@ router.post('/checkout', (req, res) => {
     });
   }
 
+  // ✅ NEW: Show announcement page (DO NOT save order yet)
+  return res.render('store/checkout-confirm', {
+    ...viewBase(req),
+    title: 'تأكيد الطلب',
+    items: itemsArr,
+    subtotal,
+    shipping,
+    total: subtotal + shipping,
+    values: req.body,
+    activeNav: 'cart',
+  });
+});
+
+/* ---------- CHECKOUT FINALIZE - SAVE ORDER (after user clicks "موافق") ---------- */
+router.post('/checkout/finalize', attachCart, (req, res) => {
+  const { customer_name, customer_phone, customer_city, customer_address, notes } = req.body || {};
+  const cart = cartLib.readCart(req);
+  const items = Object.entries(cart.items || {});
+
+  if (!items.length) return res.redirect('/cart');
+
+  const subtotal = items.reduce((s, [, it]) => s + (it.price || 0) * (it.qty || 0), 0);
+  const shipping = calcShipping(subtotal);
+  const total = subtotal + shipping;
+
+  // Save order to DB
   const r = db.run(
     `INSERT INTO orders
       (customer_name, customer_phone, customer_city, customer_address, notes, subtotal, shipping, total, status)
@@ -228,12 +257,11 @@ router.post('/checkout', (req, res) => {
     db.run('UPDATE products SET stock = MAX(0, stock - ?) WHERE id = ?', [it.qty, Number(pid)]);
   }
 
-  // Reload order + items so we have canonical created_at & subtotal/total
+  // Reload order + items for canonical data
   const savedOrder = db.get('SELECT * FROM orders WHERE id = ?', [orderId]);
   const orderItems = db.all('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
 
-  // 🔔 Fire notifications (email + WhatsApp). Don't block the response.
-  // If a channel fails, the order is still saved.
+  // 🔔 Fire notifications (Telegram) - don't block the response
   notifier
     .notifyNewOrder(savedOrder, orderItems, getSetting('store_name', 'متجر رياضي'))
     .then((r) => {
@@ -251,7 +279,8 @@ router.post('/checkout', (req, res) => {
     activeNav: 'cart',
   });
 });
-// Legal pages (Arabic only — EN/FR removed)
+
+/* ---------- LEGAL PAGES ---------- */
 router.get('/privacy', (req, res) => {
   res.render('legal/privacy-ar', { ...viewBase(req), title: 'سياسة الخصوصية' });
 });
@@ -263,4 +292,5 @@ router.get('/terms', (req, res) => {
 router.get('/return', (req, res) => {
   res.render('legal/return-ar', { ...viewBase(req), title: 'سياسة الإرجاع' });
 });
+
 module.exports = router;
