@@ -1,0 +1,382 @@
+<%- include('../partials/store-header') %>
+
+<style>
+  .checkout-confirm-page {
+    padding: 40px 0 80px;
+    min-height: 75vh;
+    background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fecaca 100%);
+  }
+  .confirm-card {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    border-top: 6px solid #f59e0b;
+    position: relative;
+    overflow: hidden;
+  }
+  .confirm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #f59e0b 0%, #ef4444 50%, #f59e0b 100%);
+  }
+  .notice-icon {
+    font-size: 4.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .confirm-card h1 {
+    text-align: center;
+    color: #b45309;
+    font-size: 1.9rem;
+    margin: 0 0 8px;
+    font-weight: 800;
+  }
+  .confirm-card .subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0 0 32px;
+  }
+  .intro {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin: 16px 0;
+    color: #0f172a;
+    text-align: center;
+  }
+  .warning-box {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-right: 4px solid #f59e0b;
+    padding: 16px 20px;
+    margin: 24px 0;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #92400e;
+    text-align: center;
+  }
+  .confirm-card h2 {
+    font-size: 1.3rem;
+    margin: 28px 0 14px;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .delivery-schedule {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    background: #fafafa;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .delivery-schedule thead {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+  }
+  .delivery-schedule th, .delivery-schedule td {
+    padding: 14px 18px;
+    text-align: right;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .delivery-schedule th {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .delivery-schedule tbody tr {
+    transition: background 0.2s;
+  }
+  .delivery-schedule tbody tr:hover {
+    background: #f1f5f9;
+  }
+  .delivery-schedule .off-day {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .delivery-schedule .off-day:hover {
+    background: #fee2e2;
+  }
+  .day-badge {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    color: #166534;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+  }
+  .off-badge {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+  }
+  .info-box {
+    padding: 18px 20px;
+    margin: 20px 0;
+    border-radius: 12px;
+  }
+  .info-box.important {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    border-right: 4px solid #ea580c;
+    color: #7c2d12;
+  }
+  .info-box p { margin: 0; line-height: 1.7; }
+  .contact-box {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 24px 0;
+  }
+  .contact-box p { margin: 0 0 10px; font-weight: 600; color: #1e40af; }
+  .contact-box ul { list-style: none; padding: 0; margin: 0; }
+  .contact-box li {
+    padding: 6px 0;
+    color: #1e3a8a;
+    font-size: 0.95rem;
+  }
+  .contact-box a { color: #1e40af; font-weight: 600; text-decoration: none; }
+  .contact-box a:hover { text-decoration: underline; }
+  .thanks {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #059669;
+    margin: 28px 0 20px;
+    font-weight: 600;
+  }
+  .agreement {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #14532d;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .confirm-form {
+    margin-top: 32px;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn {
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: 0;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+  .btn-secondary:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    flex: 1;
+    justify-content: center;
+    min-width: 200px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  }
+  .summary {
+    background: #f8fafc;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border: 1px solid #e2e8f0;
+  }
+  .summary h3 {
+    margin: 0 0 12px;
+    font-size: 1rem;
+    color: #0f172a;
+  }
+  .summary .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.95rem;
+    color: #475569;
+  }
+  .summary .row.total {
+    border-top: 1px solid #cbd5e1;
+    margin-top: 8px;
+    padding-top: 10px;
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 1.05rem;
+  }
+  @media (max-width: 600px) {
+    .confirm-card { padding: 28px 20px; }
+    .delivery-schedule th, .delivery-schedule td { padding: 10px 12px; font-size: 0.85rem; }
+    .actions { flex-direction: column-reverse; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    .confirm-card h1 { font-size: 1.5rem; }
+  }
+</style>
+
+<main class="checkout-confirm-page">
+  <div class="container">
+    <div class="confirm-card">
+      <div class="notice-icon">📢</div>
+      <h1>إعلان قبل التأكيد النهائي</h1>
+      <p class="subtitle">يرجى قراءة الإعلان بعناية قبل إكمال الطلب</p>
+
+      <p class="intro">
+        نشكركم لشراء المنتوج من موقعنا.
+        <strong>سنتصل بكم في أقرب وقت ممكن</strong> لتأكيد طلبكم.
+      </p>
+
+      <div class="warning-box">
+        ⚠️ قبل التأكيد النهائي، يرجى قراءة التالي بعناية:
+      </div>
+
+      <h2>📍 أيام التوصيل حسب الإقليم</h2>
+      <p>
+        إذا كنت من <strong>الأقاليم التالية</strong>، فلن يتم تسليم المنتوج
+        إلا في اليوم المحدد لكل إقليم:
+      </p>
+
+      <table class="delivery-schedule">
+        <thead>
+          <tr>
+            <th>الإقليم / المدينة</th>
+            <th>يوم التوصيل</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>إقليم <strong>فجيج</strong> و<strong>جرادة</strong></td>
+            <td><span class="day-badge">الإثنين</span></td>
+          </tr>
+          <tr>
+            <td>إقليم <strong>وجدة</strong> و<strong>بركان</strong></td>
+            <td><span class="day-badge">الثلاثاء</span></td>
+          </tr>
+          <tr>
+            <td>إقليم <strong>الناظور</strong> و<strong>الدريوش</strong></td>
+            <td><span class="day-badge">الأربعاء</span></td>
+          </tr>
+          <tr>
+            <td>إقليم <strong>جرسيف</strong> و<strong>تازة</strong></td>
+            <td><span class="day-badge">الخميس</span></td>
+          </tr>
+          <tr>
+            <td>إقليم <strong>تاوريرت</strong></td>
+            <td><span class="day-badge">الجمعة</span></td>
+          </tr>
+          <tr class="off-day">
+            <td><strong>يوم السبت</strong> و<strong>الأحد</strong></td>
+            <td><span class="off-badge">راحة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box important">
+        <p>
+          <strong>⚠️ ملاحظة مهمة:</strong> إذا كنت <strong>خارج هذه الأقاليم</strong>،
+          فسيتم إرسال المنتوج عبر <strong>شركات الشحن الدولي</strong>،
+          لذلك <strong>نحن غير ملزمين بتوصيل المنتوج في يوم محدد</strong> —
+          يعتمد ذلك على جدول عمل شركة الشحن.
+        </p>
+      </div>
+
+      <% if (typeof items !== 'undefined' && items.length) { %>
+      <div class="summary">
+        <h3>📦 ملخص الطلب</h3>
+        <% items.forEach(function(it) { %>
+        <div class="row">
+          <span><%= it.name %> × <%= it.qty %></span>
+          <span><%= it.price * it.qty %> MAD</span>
+        </div>
+        <% }); %>
+        <div class="row">
+          <span>المجموع الفرعي:</span>
+          <span><%= subtotal %> MAD</span>
+        </div>
+        <div class="row">
+          <span>رسوم التوصيل:</span>
+          <span><%= shipping %> MAD</span>
+        </div>
+        <div class="row total">
+          <span>المجموع الكلي:</span>
+          <span><%= total %> MAD</span>
+        </div>
+      </div>
+      <% } %>
+
+      <p class="agreement">
+        ✅ بالضغط على زر <strong>"موافق — متابعة"</strong> أدناه، فأنت توافق على هذا الإعلان
+        <strong>وسيتم التواصل معكم قريباً</strong> لتأكيد طلبكم.
+      </p>
+
+      <div class="contact-box">
+        <p>📞 في حال كان هناك أي إستفسار، المرجو مراسلتنا:</p>
+        <ul>
+          <li>📧 <a href="mailto:support@lotfi.ma">support@lotfi.ma</a></li>
+          <li>📱 <a href="https://wa.me/212693016974">+212 693 016 974</a> (واتساب)</li>
+        </ul>
+      </div>
+
+      <p class="thanks">
+        🌟 شكراً لإختياركم متجرنا، نتمنى أن نكون عند حسن ظنكم 🛒
+      </p>
+
+      <form method="POST" action="/checkout/finalize" class="confirm-form">
+        <input type="hidden" name="customer_name" value="<%= values.customer_name %>">
+        <input type="hidden" name="customer_phone" value="<%= values.customer_phone %>">
+        <input type="hidden" name="customer_city" value="<%= values.customer_city %>">
+        <input type="hidden" name="customer_address" value="<%= values.customer_address %>">
+        <input type="hidden" name="notes" value="<%= values.notes %>">
+
+        <div class="actions">
+          <a href="/checkout" class="btn btn-secondary">← تعديل الطلب</a>
+          <button type="submit" class="btn btn-primary">✅ موافق — متابعة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/store-footer') %>
